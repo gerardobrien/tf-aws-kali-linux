@@ -63,6 +63,16 @@ resource "aws_route_table_association" "kali-subnet-rt" {
 
 
 
+# Create Elastic IP for the Kali EC2 instance
+#resource "aws_eip" "kali-pip" {
+
+#tags = {
+    #Name  = "Kali PIP"
+    #VPC  =  "Kali VPC"
+    #Owner = "Gerard O'Brien"
+  #}
+#}
+
 
 
 # Build Kali EC2 VM
@@ -78,13 +88,14 @@ resource "aws_route_table_association" "kali-subnet-rt" {
   user_data = "${file("xrdp.sh")}"
   key_name = "kali"
   subnet_id = "${aws_subnet.kali-subnet.id}"
-  #security_groups = "${aws_security_group.allow_sshrdp.id}"
   vpc_security_group_ids = ["${aws_security_group.allow_sshrdp.id}"]
-  
-  #security_groups = [ "${aws_security_group.allow_sshrdp.name}" ] 
-  #security_groups = [ "${aws_security_group.allow_ssh.name}", "${aws_security_group.allow_ssh.name}" ]
+  associate_public_ip_address = "true"
 
 }
+
+
+
+
 
 
 
@@ -115,6 +126,14 @@ resource "aws_security_group" "allow_sshrdp" {
   ingress {
     from_port   = 3389
     to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks     = ["${chomp(data.http.my_public_ip.body)}/32"]
+    #cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 3390
+    to_port     = 3390
     protocol    = "tcp"
     cidr_blocks     = ["${chomp(data.http.my_public_ip.body)}/32"]
     #cidr_blocks = ["0.0.0.0/0"]
