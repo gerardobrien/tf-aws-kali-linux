@@ -86,7 +86,7 @@ resource "aws_route_table_association" "kali-subnet-rt" {
   }
 
   user_data = "${file("xrdp.sh")}"
-  key_name = "kali"
+  key_name = "kali-vm"
   subnet_id = "${aws_subnet.kali-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.allow_sshrdp.id}"]
   associate_public_ip_address = "true"
