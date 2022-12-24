@@ -10,7 +10,6 @@ resource "aws_vpc" "main" {
 }
 
 
-
 # Create subnet for Kali VM
 resource "aws_subnet" "kali-subnet" {
   vpc_id     = aws_vpc.main.id
